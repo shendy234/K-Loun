@@ -8,31 +8,31 @@ export default function App() {
       <OnboardFlow
         pages={[
           {
-            title: "Welcome to my app",
-            subtitle: "Connect your bank account now and start saving money.",
+            title: "Lazy to wash every day?",
+            subtitle: "What a waste of time",
             imageUri: Image.resolveAssetSource(
               require("../../../assets/images/onboarding-1.png")
             ).uri,
           },
           {
-            title: "Buy cool stuff",
-            subtitle: "Remember that ice cream you wanted to buy?",
+            title: "Don't have a washing machine?",
+            subtitle: "It's hard to eat",
             imageUri: Image.resolveAssetSource(
               require("../../../assets/images/onboarding-2.png")
             ).uri,
           },
           {
-            title: "The right tools",
+            title: "Prefer to lie down?",
             subtitle:
-              "Our app can do anything. Literally anything. We are that good.",
+              "Laying down while mabar is good anyway",
             imageUri: Image.resolveAssetSource(
               require("../../../assets/images/onboarding-3.png")
             ).uri,
           },
           {
-            title: "The right tools",
+            title: "The clothes are suddenly neat",
             subtitle:
-              "Our app can do anything. Literally anything. We are that good.",
+              "Laundry can be done without the need to move much",
             imageUri: Image.resolveAssetSource(
               require("../../../assets/images/onboarding-4.png")
             ).uri,

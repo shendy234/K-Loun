@@ -6,7 +6,7 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-          <Image source={require("../../../assets/profile.png")}
+          <Image source={require("../../../assets/icon.png")}
           style={styles.avatar}
         />
         <Text style={styles.name}>Andrew Ainsley</Text>

@@ -4,7 +4,7 @@ import { OnboardFlow } from "react-native-onboard";
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <View>
       <OnboardFlow
         pages={[
           {
@@ -52,9 +52,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   button: {
     backgroundColor: "#42C2FF",
     height: 55,

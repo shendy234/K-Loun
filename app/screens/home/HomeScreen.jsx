@@ -11,7 +11,7 @@ const HomeScreen = () => {
       price: 21,
       rating: 4.8,
       reviews: 3824,
-      image: require("../../../assets/service.jpg"),
+      image: require("../../../assets/images/onboarding-2.png"),
     },
     {
       name: 'Darron Kulikowski',
@@ -19,31 +19,31 @@ const HomeScreen = () => {
       price: 23,
       rating: 4.9,
       reviews: 6182,
-      image: require("../../../assets/service.jpg"),
+      image: require("../../../assets/images/onboarding-2.png"),
     },
   ];
 
   const user = {
     fullName: "John Doe",
     primaryEmailAddress: "john.doe@example.com",
-    image: require("../../../assets/service.jpg"),
+    image: require("../../../assets/images/onboarding-2.png"),
   };
 
   const featuredProducts = [
     {
       id: 1,
       name: "Tawaran 1",
-      image: require("../../../assets/service.jpg"),
+      image: require("../../../assets/images/onboarding-2.png"),
     },
     {
       id: 2,
       name: "Tawaran 2",
-      image: require("../../../assets/service.jpg"),
+      image: require("../../../assets/images/onboarding-2.png"),
     },
     {
       id: 3,
       name: "Tawaran 3",
-      image: require("../../../assets/service.jpg"),
+      image: require("../../../assets/images/onboarding-2.png"),
     },
   ];
 
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    backgroundColor:"red"
+    backgroundColor:"#42C2FF"
   },
   serviceContainer: {
     backgroundColor: 'red',

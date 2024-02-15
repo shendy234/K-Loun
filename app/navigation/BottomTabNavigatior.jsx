@@ -24,7 +24,6 @@ const BottomTabNavigator = () => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#1DA1F2",
-        headerLeft: () => (<AutoHeightImage source={require('../../assets/logo.png')} width={130} style={{margin:10}}/>),
         contentStyle: {backgroundColor: 'white'} 
       })}
     >
@@ -33,9 +32,9 @@ const BottomTabNavigator = () => {
           headerShown: false
         }}
         />
-      {/* <Tab.Screen name="Transactions" component={TransactionStackNavigator} options={{
+      <Tab.Screen name="Transactions" component={TransactionStackNavigator} options={{
           headerTitle:""       
-        }} /> */}
+        }} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{
           headerTitle:"",   
           headerShown: false    

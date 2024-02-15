@@ -5,8 +5,11 @@ import { AntDesign } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useAuthContext } from '../../store/AuthContext';
+
 
 const ProfileScreen = () => {
+  const {signOut} = useAuthContext();
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,7 +26,7 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("token");
-    navigation.navigate("LoginScreen");
+    signOut();
   };
 
   return (

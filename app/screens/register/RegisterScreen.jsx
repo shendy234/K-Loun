@@ -52,7 +52,7 @@ export default function RegisterScreen() {
       return;
     }
     axios
-      .post(`http://10.10.100.202:8090/api/auth/register`, {
+      .post(`http://10.10.100.180:8080/api/auth/register`, {
         username,
         password,
         name,

@@ -4,8 +4,10 @@ import Colors from '../../Utils/Colors';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useAuthContext } from '../../store/AuthContext';
 
 export default function LoginScreen() {
+  const {state, signIn} = useAuthContext();
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +19,7 @@ export default function LoginScreen() {
     }
   
     try {
-      const res = await axios.post(`http://10.10.100.202:8090/api/auth/login`, {
+      const res = await axios.post(`http://10.10.100.180:8080/api/auth/login`, {
         username,
         password,
       });
@@ -27,7 +29,8 @@ export default function LoginScreen() {
         setPassword("");
         // console.log(res.data)
         await AsyncStorage.setItem("token", res.data.token);
-  
+        signIn(res.data.token);
+        
         if (res.data.data) {
           await AsyncStorage.setItem("role", res.data.data.role);
         }
@@ -36,8 +39,7 @@ export default function LoginScreen() {
           await AsyncStorage.setItem("username", res.data.username);
         }
         Alert.alert("Login Successful", "You have successfully logged in.");
-        navigation.navigate("HomeScreen");
-        // navigation.navigate("ProfileScreen");
+        
 
       } else {
         console.log("Unexpected server response:", res);
@@ -112,7 +114,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 100,
-
   },
   formContainer: {
     justifyContent: 'center',

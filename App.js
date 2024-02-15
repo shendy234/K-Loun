@@ -5,7 +5,7 @@ import OnboardingScreen from './app/screens/onboarding/OnboardingScreen';
 export default function App() {
   return (
     <AuthContextProvider>
-       {/* <OnboardingScreen/> */}
+      {/* <OnboardingScreen/> */}
       <Navigation />
     </AuthContextProvider>
   );

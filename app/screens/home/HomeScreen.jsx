@@ -1,100 +1,105 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import Header from './Header';
-import Carousel from "react-native-snap-carousel";
+import Colors from '../../Utils/Colors';
+import axios from 'axios';
 
 const HomeScreen = () => {
-  const laundryServices = [
-    {
-      name: 'Jane Cooper',
-      service: 'Laundry Services',
-      price: 21,
-      rating: 4.8,
-      reviews: 3824,
-      image: require("../../../assets/images/onboarding-2.png"),
-    },
-    {
-      name: 'Darron Kulikowski',
-      service: 'Laundry Services',
-      price: 23,
-      rating: 4.9,
-      reviews: 6182,
-      image: require("../../../assets/images/onboarding-2.png"),
-    },
-  ];
+  const [id, setId] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [services, setServices] = useState([]);
 
-  const user = {
-    fullName: "John Doe",
-    primaryEmailAddress: "john.doe@example.com",
-    image: require("../../../assets/images/onboarding-2.png"),
-  };
+  useEffect(() =>{
+    handleService()
+  }, [])
 
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Tawaran 1",
-      image: require("../../../assets/images/onboarding-2.png"),
-    },
-    {
-      id: 2,
-      name: "Tawaran 2",
-      image: require("../../../assets/images/onboarding-2.png"),
-    },
-    {
-      id: 3,
-      name: "Tawaran 3",
-      image: require("../../../assets/images/onboarding-2.png"),
-    },
-  ];
+  const handleService = async () => {
+      const resService = await axios.get(`http://10.10.100.202:8090/services`);
+      console.log(resService.data)
+      setServices(resService.data.data.map(service =>{
+        return {
+          id: service.id,
+          name: service.name,
+          price: service.price,
+          image: require("../../../assets/images/Service1.jpg"),
+        }
+      }))
+      // setId(resService.data.id);
+      // setName(resService.data.name);
+      // setPrice(resService.data.price);
+        
+      }
+    
 
-  const renderCarouselItem = ({ item }) => (
-    <View style={styles.carouselItem}>
-      <Image
-        source={item.image}
-        style={styles.carouselImage}
-        resizeMode="cover"
-      />
-      <Text style={styles.carouselItemTitle}>{item.name}</Text>
-    </View>
+  // const laundryServices = [
+  //   {
+  //     id: id,
+  //     service: name,
+  //     price: price,
+  //     rating: 4.8,
+  //     reviews: 3824,
+  //     image: require("../../../assets/images/Service1.jpg"),
+  //   },
+  // ];
+
+  const itemList =[
+    {
+      image: require("../../../assets/images/Slider.jpg"),
+    },
+    {
+      image: require("../../../assets/images/Slider.jpg"),
+    },
+    {
+      image: require("../../../assets/images/Slider.jpg"),    
+    },
+  ]
+
+  const renderSeparator = () => <View style={{ width: 10 }} />; // Sesuaikan lebar jarak sesuai kebutuhan
+
+  const renderItem = ({ item }) => (
+    <View style={styles.serviceContainer}>
+      <View>
+        <Image
+          style={[styles.items, { aspectRatio: 1.8 }]}
+          source={item.image}
+          resizeMode="cover"
+        />
+      </View>
+      </View>
   );
 
   return (
     <ScrollView>
-      <Header/>
-      <View style={styles.featuredSection}>
-            <Text style={styles.sectionTitle}>Tawaran Menarik Buat Kamu</Text>
-            <Carousel
-              data={featuredProducts}
-              renderItem={renderCarouselItem}
-              sliderWidth={350}
-              itemWidth={350}
-              loop
-              autoplay
-              autoplayInterval={2000}
-            />
+      <Header />
+      <View style={styles.list}>
+      <FlatList
+        data={itemList}
+        horizontal
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index}
+        showsHorizontalScrollIndicator={false}
+        ItemSeparatorComponent={renderSeparator}
+      />
+      </View>
+        <View style={styles.container}>
+            {services.map((service) => (
+              <TouchableOpacity key={service.id} onPress={() => console.log("Service pressed", service.id)}>
+                <View style={styles.serviceContainer}>
+                  <View>
+                    <Image
+                      style={styles.image}
+                      source={service.image}
+                      resizeMode="cover"
+                    />
+                  </View>
+                  <View style={styles.textContainer}>
+                <Text style={styles.serviceName}>{service.name}</Text>
+                <Text style={styles.price}>${service.price}</Text>
+            </View>
+            
           </View>
-    <View style={styles.container}>
-      {laundryServices.map((service, index) => (
-        <View key={index} style={styles.serviceContainer}>
-          <View style={{backgroundColor:"red"}}>
-          <Image
-            style={styles.image}
-            source={service.image}
-            resizeMode="cover"
-          />
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.name}>{service.name}</Text>
-            <Text style={styles.serviceName}>{service.service}</Text>
-            <Text style={styles.price}>${service.price}</Text>
-          </View>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.rating}>{service.rating}</Text>
-            <Text style={styles.reviews}>
-              {service.reviews} reviews
-            </Text>
-          </View>
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
     </ScrollView>
@@ -107,19 +112,13 @@ const styles = StyleSheet.create({
     padding: 10,
     gap:5,
   },
-  header: {
-    padding: 20,
-    paddingTop: 40,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    backgroundColor:"#42C2FF"
-  },
+
   serviceContainer: {
-    backgroundColor: 'red',
+    backgroundColor: Colors.WHITE,
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
-    elevation: 50,
+    elevation: 20,
     flexDirection: 'row',
     alignItems: 'center',
     gap:10,
@@ -127,6 +126,7 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+    borderRadius: 10,
   },
   textContainer: {
     flex: 1,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   serviceName: {
     fontSize: 14,
-    color: 'gray',
+    color: 'black',
     marginBottom: 5,
   },
   price: {
@@ -168,23 +168,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
-  carouselItem: {
+  list:{
+    flex:1,
+    marginTop:5,
+    borderRadius:20,
+    padding:10
+  },
+  items:{
+    width: 200,
+    height: 200,
     borderRadius: 10,
-    overflow: "hidden",
-    marginHorizontal: 10,
-  },
-  carouselImage: {
-    width: "100%",
-    height: 150,
-  },
-  carouselItemTitle: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+  }
 });
 
 export default HomeScreen;

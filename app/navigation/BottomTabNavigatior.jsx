@@ -2,7 +2,6 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Ionicons } from "@expo/vector-icons";
 import TransactionStackNavigator from './TransactionStackNavigator';
-import AutoHeightImage from 'react-native-auto-height-image';
 import HomeStackNavigator from './HomeStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
 
@@ -34,9 +33,9 @@ const BottomTabNavigator = () => {
           headerShown: false
         }}
         />
-      <Tab.Screen name="Transactions" component={TransactionStackNavigator} options={{
+      {/* <Tab.Screen name="Transactions" component={TransactionStackNavigator} options={{
           headerTitle:""       
-        }} />
+        }} /> */}
       <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{
           headerTitle:"",   
           headerShown: false    

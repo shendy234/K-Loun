@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import HomeScreen from "../screens/HomeScreen/HomeScreen";
-import TabNavigation from "./BottomTabNavigatior";
 import StackNavigation from "./TransactionStackNavigator";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabNavigator from "./BottomTabNavigatior";
+import AuthStackNavigatitor from "./AuthStackNavigator";
 
 
 const Stack = createNativeStackNavigator();
@@ -21,7 +20,9 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       {/* <StackNavigation/> */}
-      <BottomTabNavigator></BottomTabNavigator>
+      <AuthStackNavigatitor/>
+      {/* <BottomTabNavigator>
+      </BottomTabNavigator> */}
     </NavigationContainer>
   );
 }

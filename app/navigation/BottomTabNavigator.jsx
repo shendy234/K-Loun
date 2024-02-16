@@ -1,9 +1,9 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Ionicons } from "@expo/vector-icons";
-import TransactionStackNavigator from './TransactionStackNavigator';
-import HomeStackNavigator from './HomeStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
+import HomeScreen from '../screens/home/HomeScreen';
+import StatusTabNavigator from './StatusTabNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,12 +27,12 @@ const BottomTabNavigator = () => {
         contentStyle: {backgroundColor: 'white'} 
       })}
     >
-      <Tab.Screen name="Home" component={HomeStackNavigator} options={{
+      <Tab.Screen name="Home" component={HomeScreen} options={{
           headerTitle:"",       
           headerShown: false
         }}
         />
-      <Tab.Screen name="Transactions" component={TransactionStackNavigator} options={{
+      <Tab.Screen name="Transactions" component={StatusTabNavigator} options={{
           headerTitle:""       
         }} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{

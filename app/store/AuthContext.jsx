@@ -12,33 +12,6 @@ import { jwtDecode } from "jwt-decode";
 const AuthContext = createContext({});
 
 const AuthContextProvider = ({ children }) => {
-  // const [token, setToken] = useState(null);
-  // const [authenticated, setAuthenticated] = useState(false);
-  // const [userId, setUserId] = useState(undefined);
-
-  // useEffect(() => {
-  //   // Fetch the token from storage then navigate to our appropriate place
-  //   const bootstrapAsync = async () => {
-  //     let userToken;
-
-  //     try {
-  //       console.log('cek')
-  //       userToken = await AsyncStorage.getItem("token");
-  //       setToken(userToken);
-  //       const decoded = jwtDecode(token);
-  //       setUserId(decoded.userId);
-  //     console.log(authenticated)
-  //       if(userToken){
-  //         setAuthenticated = true;
-  //       }
-  //     } catch (e) {
-  //       // Restoring token failed
-  //     }
-  //   };
-
-  //   bootstrapAsync();
-  // }, [token, authenticated]);
-
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {

@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity }
 import Header from './Header';
 import Colors from '../../Utils/Colors';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import DetailServiceScreen from './DetailServiceScreen';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -15,13 +18,15 @@ const HomeScreen = () => {
   }, [])
 
   const handleService = async () => {
-      const resService = await axios.get(`http://10.10.100.202:8090/services`);
+      const resService = await axios.get(`http://10.10.100.180:8080/api/services`);
       console.log(resService.data)
       setServices(resService.data.data.map(service =>{
         return {
           id: service.id,
           name: service.name,
           price: service.price,
+          description: service.description,
+          duration: service.duration,
           image: require("../../../assets/images/Service1.jpg"),
         }
       }))
@@ -84,7 +89,7 @@ const HomeScreen = () => {
       </View>
         <View style={styles.container}>
             {services.map((service) => (
-              <TouchableOpacity key={service.id} onPress={() => console.log("Service pressed", service.id)}>
+              <TouchableOpacity key={service.id} onPress={() => navigation.navigate('HomeStack',{screen: 'DetailService', params: service}) }>
                 <View style={styles.serviceContainer}>
                   <View>
                     <Image

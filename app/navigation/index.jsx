@@ -3,18 +3,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthStackNavigator from "./AuthStackNavigator";
 import { useAuthContext } from "../store/AuthContext";
-import BottomTabNavigator from "./BottomTabNavigatior";
+import HomeStackNavigator from "./HomeStackNavigator";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   const {state} = useAuthContext();
-
-  console.log('te')
-
-  console.log(state.isSignout);
-  console.log(state.userToken);
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -26,8 +20,8 @@ export default function Navigation() {
           />
         ) : (
           <Stack.Screen
-            name="BottomTab"
-            component={BottomTabNavigator}
+            name="HomeStack"
+            component={HomeStackNavigator}
             options={{ headerShown: false }}
           />
         )}

@@ -8,6 +8,7 @@ import {
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import http from "../api/HttpConfig";
 
 const AuthContext = createContext({});
 
@@ -20,6 +21,7 @@ const AuthContextProvider = ({ children }) => {
             ...prevState,
             userToken: action.token,
             isLoading: false,
+            dataUser: action.dataUser
           };
         case "SIGN_IN":
           return {
@@ -39,6 +41,7 @@ const AuthContextProvider = ({ children }) => {
       isLoading: true,
       isSignout: false,
       userToken: null,
+      dataUser: null
     }
   );
 
@@ -46,8 +49,21 @@ const AuthContextProvider = ({ children }) => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let userToken;
+      let dataUser;
       try {
+        await AsyncStorage.getItem("token").then(async (token) => {
+          await http
+            .get(`/api/customers/${jwtDecode(token).userId}`)
+            .then((response) => {
+              dataUser = response.data.data;
+            });
+        });
+
         userToken = await AsyncStorage.getItem("token");
+        // userId = jwtDecode(userToken).userId;
+
+        // const response = await http.get(`/api/customers/${AsyncStorage.getItem("token")}`);
+        // // const data = response.data;
       } catch (e) {
         // Restoring token failed
       }
@@ -56,7 +72,7 @@ const AuthContextProvider = ({ children }) => {
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+      dispatch({ type: "RESTORE_TOKEN", token: userToken, dataUser: dataUser });
     };
 
     bootstrapAsync();
@@ -68,19 +84,13 @@ const AuthContextProvider = ({ children }) => {
         // userToken = await AsyncStorage.getItem("token");
         dispatch({ type: "SIGN_IN", token: userToken });
       },
-      signOut: () => dispatch({ type: "SIGN_OUT" })
+      signOut: () => dispatch({ type: "SIGN_OUT" }),
     }),
     []
   );
 
-
   return (
-    <AuthContext.Provider
-      value={{...
-        authContext, 
-        state
-      }}
-    >
+    <AuthContext.Provider value={{ ...authContext, state }}>
       {children}
     </AuthContext.Provider>
   );

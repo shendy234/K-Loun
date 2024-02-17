@@ -3,13 +3,15 @@ import {
   Text,
   View,
   Alert,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
 import React from "react";
 import Buttons from "../../components/Buttons";
+import { useAuthContext } from "../../store/AuthContext";
 
-const ConfirmationScreen = () => {
+const ConfirmationScreen = ({navgation, route}) => {
+  const dataUser = useAuthContext().state.dataUser;
+  const serv = route.params;
   return (
     <View style={styles.container}>
     <ScrollView>
@@ -19,21 +21,21 @@ const ConfirmationScreen = () => {
         </View>
         <View style={styles.rowContainer}>
           <Text style={styles.columnLeft}>{`Service`}</Text>
-          <Text style={styles.columnRight}>{`Cuci Cepat`}</Text>
+          <Text style={styles.columnRight}>{serv.name}</Text>
         </View>
         <View style={styles.rowContainer}>
           <Text style={styles.columnLeft}>{`Customer`}</Text>
-          <Text style={styles.columnRight}>{`Andrey Ainsley`}</Text>
+          <Text style={styles.columnRight}>{dataUser.name}</Text>
         </View>
         <View style={styles.rowContainer}>
-          <Text style={styles.columnLeft}>{`Date & Time`}</Text>
-          <Text style={styles.columnRight}>{`Dec 23, 2024`}</Text>
+          <Text style={styles.columnLeft}>{`Date`}</Text>
+          <Text style={styles.columnRight}>{new Date().toDateString(`2024-02-17T21:53:16.110836`)}</Text>
         </View>
         <View style={{ ...styles.rowContainer, alignItems: "flex-start" }}>
           <Text style={styles.columnLeft}>{`Address`}</Text>
           <Text
             style={styles.columnRight}
-          >{`Enigma Camp, Jl. H. Dahlan, RT.8/RW.4, Ragunan, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta`}</Text>
+          >{dataUser.address}</Text>
         </View>
         <View style={styles.rowContainer}>
           <View style={styles.line} />

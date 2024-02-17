@@ -9,15 +9,12 @@ import {
 } from "react-native";
 import React from "react";
 
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../Utils/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Buttons from "../../components/Buttons";
 
 const DetailServiceScreen = ({ navigation, route }) => {
   const serv = route.params;
-  console.log("serv " + serv);
-  console.log(serv.name);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
@@ -53,7 +50,7 @@ const DetailServiceScreen = ({ navigation, route }) => {
           </TouchableOpacity> */}
         </ScrollView>
         <View style={styles.containerButton}>
-          <Buttons color="blue" title="Book Now" onPress={() => navigation.navigate('HomeStack',{screen: 'ConfirmationBooking'}) }/>
+          <Buttons color="blue" title="Book Now" onPress={() => navigation.navigate('HomeStack',{screen: 'ConfirmationBooking', params : serv}) }/>
         </View>
       </View>
     </SafeAreaView>

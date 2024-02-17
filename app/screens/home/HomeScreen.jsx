@@ -19,7 +19,7 @@ const HomeScreen = () => {
 
   const handleService = async () => {
       const resService = await axios.get(`http://10.10.100.180:8080/api/services`);
-      console.log(resService.data)
+      // console.log(resService.data)
       setServices(resService.data.data.map(service =>{
         return {
           id: service.id,

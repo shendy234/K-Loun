@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ProfileStackNavigator from './ProfileStackNavigator';
 import HomeScreen from '../screens/home/HomeScreen';
 import StatusTabNavigator from './StatusTabNavigator';
+import Colors from '../Utils/Colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,6 @@ const BottomTabNavigator = () => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#1DA1F2",
-        contentStyle: {backgroundColor: 'white'} 
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{
@@ -33,7 +33,13 @@ const BottomTabNavigator = () => {
         }}
         />
       <Tab.Screen name="Transactions" component={StatusTabNavigator} options={{
-          headerTitle:""       
+          headerTitle:"Tranactions",
+          headerStyle: {
+            backgroundColor: Colors.PRIMARY,
+          },
+          headerTitleStyle: {
+            color: "white"
+          },
         }} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{
           headerTitle:"",   

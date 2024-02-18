@@ -1,50 +1,95 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  ScrollView,
-} from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, Alert, ScrollView } from "react-native";
+import React, { useState } from "react";
 import Buttons from "../../components/Buttons";
 import { useAuthContext } from "../../store/AuthContext";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../../Utils/Colors";
+import http from "../../api/HttpConfig";
 
-const ConfirmationScreen = ({navgation, route}) => {
+const ConfirmationScreen = ({ navigation, route }) => {
   const dataUser = useAuthContext().state.dataUser;
   const serv = route.params;
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const confirmationHandle = async (userId, serviceId) => {
+    setIsLoading(true);
+    try {
+      const response = await http.post(`/api/transaction`, {
+        userId: userId,
+        serviceId: serviceId,
+      });
+
+      console.log(response.data);
+
+      if (response.data.statusCode === 200) {
+        // navigation.navigate('HomeStack',{screen: 'Transaction'})
+        navigation.replace("BottomTabNavigator", { screen: "Transactions" });
+        Alert.alert( 'Booking Successful!',`You have successfully book the services. Please wait until Admin process.`);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      Alert.alert(error);
+    }
+
+    setIsLoading(false);
+  };
+
   return (
     <View style={styles.container}>
-    <ScrollView>
-      <View style={styles.cardContainer}>
-        <View style={styles.rowContainer}>
-          <View style={styles.line} />
+      <ScrollView>
+        <View style={styles.cardContainer}>
+          <View style={styles.rowContainer}>
+            <Text
+              style={{
+                ...styles.columnLeft,
+                fontWeight: "700",
+                color: Colors.PRIMARY,
+              }}
+            >{`CONFIRMATION`}</Text>
+            <Text style={styles.columnRight}>
+              <MaterialCommunityIcons
+                name="text-box-check-outline"
+                size={24}
+                color={Colors.PRIMARY}
+              />
+            </Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <View style={styles.line} />
+          </View>
+          <View style={styles.rowContainer}>
+            <Text style={styles.columnLeft}>{`Service`}</Text>
+            <Text style={styles.columnRight}>{serv.name}</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <Text style={styles.columnLeft}>{`Customer`}</Text>
+            <Text style={styles.columnRight}>{dataUser.name}</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <Text style={styles.columnLeft}>{`Date`}</Text>
+            <Text style={styles.columnRight}>
+              {new Date().toDateString(new Date())}
+            </Text>
+          </View>
+          <View style={{ ...styles.rowContainer, alignItems: "flex-start" }}>
+            <Text style={styles.columnLeft}>{`Address`}</Text>
+            <Text style={styles.columnRight}>{dataUser.address}</Text>
+          </View>
+          <View style={styles.rowContainer}>
+            <View style={styles.line} />
+          </View>
         </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.columnLeft}>{`Service`}</Text>
-          <Text style={styles.columnRight}>{serv.name}</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.columnLeft}>{`Customer`}</Text>
-          <Text style={styles.columnRight}>{dataUser.name}</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={styles.columnLeft}>{`Date`}</Text>
-          <Text style={styles.columnRight}>{new Date().toDateString(`2024-02-17T21:53:16.110836`)}</Text>
-        </View>
-        <View style={{ ...styles.rowContainer, alignItems: "flex-start" }}>
-          <Text style={styles.columnLeft}>{`Address`}</Text>
-          <Text
-            style={styles.columnRight}
-          >{dataUser.address}</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <View style={styles.line} />
-        </View>
+      </ScrollView>
+      <View style={styles.containerButton}>
+        <Buttons
+          isLoading={isLoading}
+          color="blue"
+          title="Confirmation"
+          onPress={() => confirmationHandle(dataUser.id, serv.id)}
+        />
       </View>
-    </ScrollView>
-    <View style={styles.containerButton}>
-          <Buttons color="blue" title="Confirmation" onPress={() => Alert.alert('Tampil ya mas brey') }/>
-        </View>
     </View>
   );
 };

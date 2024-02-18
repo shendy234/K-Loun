@@ -1,10 +1,29 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import Colors from "../Utils/Colors";
 
 const Buttons = (props) => {
   const color = props.color;
-  return (
+  const isLoading = props.isLoading;
+  return isLoading ? (
+    <TouchableOpacity
+      disabled={true}
+      style={{
+        ...styles.button,
+        backgroundColor: Colors.GREY,
+      }}
+      onPress={props.onPress}
+    >
+      <ActivityIndicator size="large" color={Colors.PRIMARY} />
+    </TouchableOpacity>
+  ) : (
     <TouchableOpacity
       disabled={props.disabled}
       style={{
@@ -37,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 100,
-    elevation: 6
+    elevation: 6,
   },
   buttonText: {
     fontSize: 16,

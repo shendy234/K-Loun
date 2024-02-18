@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import Header from './Header';
 import Colors from '../../Utils/Colors';
-import axios from 'axios';
+// import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import DetailServiceScreen from './DetailServiceScreen';
+import http from '../../api/HttpConfig';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -18,7 +19,7 @@ const HomeScreen = () => {
   }, [])
 
   const handleService = async () => {
-      const resService = await axios.get(`http://10.10.100.180:8080/api/services`);
+      const resService = await http.get(`/api/services`);
       // console.log(resService.data)
       setServices(resService.data.data.map(service =>{
         return {

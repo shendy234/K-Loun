@@ -50,7 +50,7 @@ const DetailServiceScreen = ({ navigation, route }) => {
           </TouchableOpacity> */}
         </ScrollView>
         <View style={styles.containerButton}>
-          <Buttons color="blue" title="Book Now" onPress={() => navigation.navigate('HomeStack',{screen: 'ConfirmationBooking', params : serv}) }/>
+          <Buttons isLoading={false} color="blue" title="Book Now" onPress={() => navigation.navigate('HomeStack',{screen: 'ConfirmationBooking', params : serv}) }/>
         </View>
       </View>
     </SafeAreaView>

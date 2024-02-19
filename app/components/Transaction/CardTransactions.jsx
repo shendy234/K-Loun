@@ -3,13 +3,15 @@ import React from "react";
 import State from "../State";
 import Colors from "../../Utils/Colors";
 import { useNavigation } from "@react-navigation/native";
+import {formatIDRCurrency} from "../../Utils/FormatIdr"
 
 const CardTransactions = ({ item }) => {
   const navigation = useNavigation();
+  // console.log(item)
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("DetailTransaction");
+        navigation.navigate("DetailTransaction", {userId: item.id});
       }}
       key={item.id}
       style={styles.serviceContainer}
@@ -22,10 +24,10 @@ const CardTransactions = ({ item }) => {
         />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.date}>12 Dec 2024</Text>
+        <Text style={styles.date}>{new Date().toDateString(item.startDate)}</Text>
         <Text style={styles.title}>{item.service.name}</Text>
-        <State indicator="2" text="Waiting" />
-        <Text style={styles.price}>{item.totalPrice}</Text>
+        <State indicator={item.status.indicator} text={item.status.name} />
+        <Text style={styles.price}>{item.totalPrice?formatIDRCurrency(item.totalPrice):""}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 16,
     padding: 10,
-    marginBottom: 16,
+    marginBottom: 20,
     elevation: 1,
     marginHorizontal: 2,
     flexDirection: "row",

@@ -9,10 +9,12 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import http from "../api/HttpConfig";
+import { Alert } from "react-native";
 
 const AuthContext = createContext({});
 
 const AuthContextProvider = ({ children }) => {
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -41,7 +43,7 @@ const AuthContextProvider = ({ children }) => {
       isLoading: true,
       isSignout: false,
       userToken: null,
-      dataUser: null
+      dataUser: []
     }
   );
 
@@ -51,17 +53,19 @@ const AuthContextProvider = ({ children }) => {
       let userToken;
       let dataUser;
       try {
-        await AsyncStorage.getItem("token").then(async (token) => {
+        await AsyncStorage.getItem("token",).then(async (token) => {
           await http
             .get(`/api/customers/${jwtDecode(token).userId}`)
             .then((response) => {
               dataUser = response.data.data;
             }).catch((error) => { 
               // Handle any errors that occur 
+              
               console.error(error); 
           }); 
         }).catch((error) => { 
           // Handle any errors that occur 
+          alert.Alert('no conection internet')
           console.error(error); 
       }); ;
 

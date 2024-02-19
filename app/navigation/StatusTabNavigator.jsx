@@ -3,6 +3,7 @@ import TransactionScreen from "../screens/TransactionScreen";
 import ActiveOrderScreen from "../screens/TransactionScreen/ActiveOrderScreen";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../Utils/Colors";
+import HistoryScreen from "../screens/TransactionScreen/HistoryScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -36,7 +37,7 @@ const StatusTabNavigator = () => {
       />
       <Tab.Screen
         name="History"
-        component={TransactionScreen}
+        component={HistoryScreen}
         options={{
           title: "History",
         }}

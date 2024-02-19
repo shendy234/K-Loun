@@ -2,99 +2,103 @@ import {
   StyleSheet,
   View,
   FlatList,
-  SafeAreaView,
   ActivityIndicator,
   Text,
+  RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CardTransactions from "../../components/Transaction/CardTransactions";
 import http from "../../api/HttpConfig";
 import { useAuthContext } from "../../store/AuthContext";
 import Colors from "../../Utils/Colors";
 
 const ActiveOrderScreen = () => {
-  const navigation = useNavigation();
+
+  console.log("3")
 
   const dataUser = useAuthContext().state.dataUser;
-  const [transactionList, setTransactionList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingBottom, setIsLoadingBottom] = useState(false);
-  const [refreshing, setRefresing] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const fetchData = async (limit) => {
-    const response = await http
-      .get(
-        `/api/transaction/active/${dataUser.id}?page=${currentPage}&size=${limit}`
-      )
-      .catch((e) => {
-        if (e.response.data.statusCode == 404) {
-          setIsLoading(false);
-        }
-      });
-    setTransactionList(response.data.data);
-    setIsLoading(false);
-  };
-
-  const fethMore = async () => {
-    if (isLoadingBottom) return;
-
-    setIsLoadingBottom(true);
-    const nextPage = currentPage + 1;
-    let response = await http.get(
-      `/api/transaction/active/${dataUser.id}?page=${currentPage}&size=${2}`
-    );
-    // setTransactionList([...transactionList, ...response.data.data]);
-    setTransactionList((prev)=>{
-      return [...prev, ...response.data.data];
-    })
-    setCurrentPage(nextPage);
-    setIsLoadingBottom(false);
-  };
-
-  const handleRefresh = async () => {
-    setRefresing(true);
-    fetchData(2);
-    setRefresing(false);
-    setCurrentPage(1)
-
-  };
-
+  const [limit, setLimit] = useState(4);
+  const [isEndReached, setIsEndReached] = useState(false);
+  const [hasMoreData, setHasMoreData] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  
   useEffect(() => {
-    fetchData(3);
+    fetchTransactions();
   }, []);
 
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={Colors.PRIMARY} />
-      </View>
-    );
-  }
+  const fetchTransactions = async () => {
+    if (loading || !hasMoreData) return;
+
+    setLoading(true);
+    try {
+      const response = await http.get(
+        `/api/transaction/active/${dataUser.id}?page=${currentPage}&size=${limit}`
+      );
+      const data = response.data.data;
+      setTransactions((prevTransactions) => [...prevTransactions, ...data]);
+      setCurrentPage((prevPage) => prevPage + 1);
+      if (data.length < limit) {
+        setHasMoreData(false);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log("Data not found");
+        setHasMoreData(false);
+      } else {
+        console.error("Error fetching transactions:", error);
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const handleEndReached = () => {
+    fetchTransactions();
+  };
+
+  const onRefresh = () => {
+    setTransactions([]);
+    setCurrentPage(1);
+    setHasMoreData(true);
+    setRefreshing(true);
+    fetchTransactions();
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={transactionList}
+        style={{ paddingTop: 16 }}
+        data={transactions}
         renderItem={({ item }) => <CardTransactions item={item} />}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
         ListEmptyComponent={
-          <Text style={{ color: Colors.PRIMARY, textAlign: "center" }}>
-            No Transaction Found
-          </Text>
-        }
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
-        onEndReached={fethMore}
-        onEndReachedThreshold={3}
-        ListFooterComponent={() =>
-          isLoadingBottom ? (
-            <ActivityIndicator size="large" color={Colors.PRIMARY} />
+          !transactions == [] ? (
+            <Text style={{ color: Colors.PRIMARY, textAlign: "center" }}>
+              No Transaction Found
+            </Text>
           ) : (
-            null
+            <Text>Loading</Text>
           )
+        }
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListFooterComponent={
+          loading ? (
+            <ActivityIndicator
+              style={{ marginBottom: 20 }}
+              size="large"
+              color={Colors.PRIMARY}
+            />
+          ) : null
         }
       />
     </View>
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 1,
     gap: 5,
     backgroundColor: "white",
   },

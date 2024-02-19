@@ -8,6 +8,7 @@ import {
   StatusBar,
 } from "react-native";
 import React from "react";
+import {formatIDRCurrency} from "../../Utils/FormatIdr"
 
 import Colors from "../../Utils/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,7 +31,7 @@ const DetailServiceScreen = ({ navigation, route }) => {
           <View style={styles.containerText}>
             <Text style={styles.title}>{serv.name}</Text>
             <View style={styles.containerPrice}>
-              <Text style={styles.price}>Rp. {serv.price}</Text>
+              <Text style={styles.price}>{formatIDRCurrency(serv.price)}</Text>
               <Text style={{ fontWeight: 700 }}> /1Kg</Text>
             </View>
             <View

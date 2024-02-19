@@ -25,7 +25,7 @@ const CardTransactions = ({ item }) => {
         <Text style={styles.date}>12 Dec 2024</Text>
         <Text style={styles.title}>{item.service.name}</Text>
         <State indicator="2" text="Waiting" />
-        <Text style={styles.price}>Rp.120.0009</Text>
+        <Text style={styles.price}>{item.totalPrice}</Text>
       </View>
     </TouchableOpacity>
   );

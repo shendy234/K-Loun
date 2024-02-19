@@ -56,8 +56,14 @@ const AuthContextProvider = ({ children }) => {
             .get(`/api/customers/${jwtDecode(token).userId}`)
             .then((response) => {
               dataUser = response.data.data;
-            });
-        });
+            }).catch((error) => { 
+              // Handle any errors that occur 
+              console.error(error); 
+          }); 
+        }).catch((error) => { 
+          // Handle any errors that occur 
+          console.error(error); 
+      }); ;
 
         userToken = await AsyncStorage.getItem("token");
         // userId = jwtDecode(userToken).userId;

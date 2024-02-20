@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
-import axios from "axios";
 import Colors from '../../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
+import http from '../../api/HttpConfig';
+import { Feather } from '@expo/vector-icons';
+
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -19,6 +21,7 @@ export default function RegisterScreen() {
   const [nameError, setNameError] = React.useState('');
   const [phoneError, setPhoneError] = React.useState('');
   const [addressError, setAddressError] = React.useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async () => {
     setUsernameError('');
@@ -51,8 +54,8 @@ export default function RegisterScreen() {
     if (!username || !password || !email || !name || !phone || !address) {
       return;
     }
-    axios
-      .post(`http://10.10.100.180:8080/api/auth/register`, {
+    http
+      .post(`/api/auth/register`, {
         username,
         password,
         name,
@@ -103,16 +106,22 @@ export default function RegisterScreen() {
       </View>
       <Text style={styles.errorText}>{usernameError}</Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            setPasswordError('');
-          }}
-        />
+      <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPasswordError('');
+                }}
+              />
+              <TouchableOpacity
+                style={styles.iconContainer}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
+              </TouchableOpacity>
         <Text style={styles.errorText}>{passwordError}</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -223,6 +232,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     color: 'black',
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 10,
   },
   errorText: {
     color: 'red',

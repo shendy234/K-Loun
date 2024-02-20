@@ -7,25 +7,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useAuthContext } from '../../store/AuthContext';
 
-
 const ProfileScreen = () => {
-  const {signOut} = useAuthContext();
+  const { state, signOut } = useAuthContext();
   const navigation = useNavigation();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [imageProfile, setImageProfile] = useState(null);
 
-  useEffect(()=>{
-    handleProfile()
-  })
+  useEffect(() => {
+    handleProfile();
+
+    // Add listener to refresh data when coming back from EditProfileScreen
+    const unsubscribe = navigation.addListener('focus', () => {
+      handleProfile();
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation]);
 
   const handleProfile = async () => {
-    setName(await AsyncStorage.getItem("name"))
-    setEmail(await AsyncStorage.getItem("email"))
-  }
-    
+    // Retrieve name and email from AsyncStorage
+    setName(await AsyncStorage.getItem('name'));
+    setEmail(await AsyncStorage.getItem('email'));
+  
+    // Retrieve the profile image URL from AsyncStorage
+    const imageProfileURL = await AsyncStorage.getItem('imageProfile');
+    setImageProfile(imageProfileURL ? { uri: imageProfileURL } : null);
+  };
+  
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem('token');
     signOut();
   };
 
@@ -33,14 +47,15 @@ const ProfileScreen = () => {
     <ScrollView>
     <View style={styles.container}>
       <View style={styles.header}>
-          <Image source={require("../../../assets/icon.png")}
+        <Image
+          source={imageProfile ? imageProfile : require("../../../assets/icon.png")}
           style={styles.avatar}
         />
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.email}>{email}</Text>
       </View>
       <View style={styles.options}>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("EditProfile")}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('HomeStack',{screen: 'EditProfile'}) }>
          <View style={styles.pembungkus}>
           <Feather name="edit" size={24} color="gray" />
           <Text style={styles.optionText}>Edit Profile</Text>
@@ -49,55 +64,19 @@ const ProfileScreen = () => {
           <AntDesign name="right" size={16} color="gray" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-        <View style={styles.pembungkus}>
-          <Feather name="bell" size={24} color="gray" />
-          <Text style={styles.optionText}>Notification</Text>
-          </View>
-          <View>
-          <AntDesign name="right" size={16} color="gray" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-        <View style={styles.pembungkus}>
-          <Feather name="dollar-sign" size={24} color="gray" />
-          <Text style={styles.optionText}>Payment</Text>
-          </View>
-          <View>
-          <AntDesign name="right" size={16} color="gray" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("EditPassword")}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('HomeStack',{screen: 'EditPassword'}) }>
         <View style={styles.pembungkus}>
           <Feather name="lock" size={24} color="gray" />
-          <Text style={styles.optionText}>Security</Text>
+          <Text style={styles.optionText}>Update Password</Text>
           </View>
           <View>
           <AntDesign name="right" size={16} color="gray" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-        <View style={styles.pembungkus}>
-          <Feather name="globe" size={24} color="gray" />
-          <Text style={styles.optionText}>Language</Text>
-          </View>
-          <View>
-          <AntDesign name="right" size={16} color="gray" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('HomeStack',{screen: 'TermAndCondition'}) }>
         <View style={styles.pembungkus}>
           <Feather name="info" size={24} color="gray" />
-          <Text style={styles.optionText}>Privacy Policy</Text>
-          </View>
-          <View>
-          <AntDesign name="right" size={16} color="gray" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-        <View style={styles.pembungkus}>
-          <Feather name="help-circle" size={24} color="gray" />
-          <Text style={styles.optionText}>Help Center</Text>
+          <Text style={styles.optionText}>Term & Condition</Text>
           </View>
           <View>
           <AntDesign name="right" size={16} color="gray" />
@@ -115,7 +94,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.THIRD,
+    backgroundColor: Colors.PRIMARY,
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -164,13 +143,15 @@ const styles = StyleSheet.create({
     color: Colors.BLACK,
   },
   logout: {
-    backgroundColor: "red",
+    backgroundColor: Colors.RED,
     paddingVertical: 15,
     alignItems: 'center',
     borderRadius: 8,
+    marginBottom: 30,
+    marginTop:230,
   },
   logoutText: {
-    color: '#fff',
+    color: Colors.WHITE,
     fontSize: 16,
     fontWeight: 'bold',
   },

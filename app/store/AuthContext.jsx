@@ -56,8 +56,17 @@ const AuthContextProvider = ({ children }) => {
         await AsyncStorage.getItem("token",).then(async (token) => {
           await http
             .get(`/api/customers/${jwtDecode(token).userId}`)
-            .then((response) => {
+            .then(async (response) => {
               dataUser = response.data.data;
+              // await AsyncStorage.setItem("username", response.data.data.username)
+              // await AsyncStorage.setItem("password", response.data.data.password)
+              // await AsyncStorage.setItem("id", response.data.data.id)
+              // await AsyncStorage.setItem("name", response.data.data.name)
+              // await AsyncStorage.setItem("email", response.data.data.email)
+              // await AsyncStorage.setItem("phoneNumber", response.data.data.phone)
+              // await AsyncStorage.setItem("address", response.data.data.address)
+              // await AsyncStorage.setItem("imageProfile", response.data.data.imageProfile)
+              
             }).catch((error) => { 
               // Handle any errors that occur 
               

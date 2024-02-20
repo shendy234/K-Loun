@@ -6,6 +6,8 @@ import Colors from '../../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
 import DetailServiceScreen from './DetailServiceScreen';
 import http from '../../api/HttpConfig';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Import the icon library
+
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -20,7 +22,6 @@ const HomeScreen = () => {
 
   const handleService = async () => {
       const resService = await http.get(`/api/services`);
-      // console.log(resService.data)
       setServices(resService.data.data.map(service =>{
         return {
           id: service.id,
@@ -30,25 +31,8 @@ const HomeScreen = () => {
           duration: service.duration,
           image: require("../../../assets/images/Service1.jpg"),
         }
-      }))
-      // setId(resService.data.id);
-      // setName(resService.data.name);
-      // setPrice(resService.data.price);
-        
+      })) 
       }
-    
-
-  // const laundryServices = [
-  //   {
-  //     id: id,
-  //     service: name,
-  //     price: price,
-  //     rating: 4.8,
-  //     reviews: 3824,
-  //     image: require("../../../assets/images/Service1.jpg"),
-  //   },
-  // ];
-
   const itemList =[
     {
       image: require("../../../assets/images/Slider.jpg"),
@@ -102,8 +86,15 @@ const HomeScreen = () => {
                   <View style={styles.textContainer}>
                 <Text style={styles.serviceName}>{service.name}</Text>
                 <Text style={styles.price}>${service.price}</Text>
+                <View style={styles.iconContainer}>
+                  <Text></Text>
+                <View style={styles.icon}>
+                  <Icon name="washing-machine" size={25} color={Colors.PRIMARY} />
+                  <Icon name="tshirt-crew" size={25} color={Colors.PRIMARY} />
+                  <Icon name="iron" size={30} color={Colors.PRIMARY} />
+                </View>
+                </View>
             </View>
-            
           </View>
         </TouchableOpacity>
       ))}
@@ -184,7 +175,18 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 10,
-  }
+  },
+  iconContainer:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    marginLeft:10,
+  },
+  icon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    gap:5,
+  },
 });
 
 export default HomeScreen;

@@ -7,7 +7,7 @@ import DetailTransactionScreen from "../screens/TransactionScreen/DetailTransact
 import EditProfileScreen from "../screens/profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/profile/EditPassword";
 import ConfirmationScreen from "../screens/home/ConfirmationScreen";
-import SuccessfulScreen from "../screens/TransactionScreen/SuccessfulScreen";
+import TermsAndConditions from "../screens/profile/TermAndConditions";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,12 +37,28 @@ const HomeStackNavigator = () => {
           headerShown: true,
         }}
       />
-      <Stack.Screen name="Success" component={SuccessfulScreen} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+
+      <Stack.Screen 
+      name="EditProfile" 
+      component={EditProfileScreen} 
+      options={{
+        title: "Edit Profile",
+        headerShown: true,
+      }}
+      />
       <Stack.Screen
         name="EditPassword"
         component={EditPasswordScreen}
         options={{
+          title: "Edit Password",
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="TermAndCondition"
+        component={TermsAndConditions}
+        options={{
+          title: "Term And Condition",
           headerShown: true,
         }}
       />

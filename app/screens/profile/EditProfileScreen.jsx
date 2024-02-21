@@ -5,8 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useAuthContext } from '../../store/AuthContext';
+import http from '../../api/HttpConfig';
+import { BASE_HOST } from '../../api/BaseUrl';
 
 const EditProfileScreen = () => {
+  const { refresh } = useAuthContext();
   const navigation = useNavigation();
   const [state, setState] = useState({
     id:'',
@@ -32,6 +36,7 @@ const EditProfileScreen = () => {
   }, []);
 
   const handleUpdateProfile = async () => {
+    
     try {
       const storedUsername = await AsyncStorage.getItem('username');
       const storedName = await AsyncStorage.getItem('name');
@@ -114,7 +119,7 @@ const EditProfileScreen = () => {
   const handleUpdateProfileData = async () => {
     try {
       if (validateForm()) {
-        const res = await axios.put(`http://10.10.100.202:8090/api/customers`, {
+        const res = await http.put(`/customers`, {
           id: state.id,
           username: state.username,
           password: state.password,
@@ -133,6 +138,7 @@ const EditProfileScreen = () => {
         await AsyncStorage.setItem('imageProfile', state.imageProfile);
         console.log('Profile Updated Successfully');
 
+        refresh();
         // Navigate back to ProfileScreen and trigger the focus event
         navigation.navigate('ProfileScreen');
       }
@@ -193,7 +199,7 @@ const EditProfileScreen = () => {
         name: 'profile_image.jpg', // Specify a valid image name with the correct extension
       });
   
-      const response = await fetch(`http://10.10.100.202:8090/api/customers/image/${state.id}`, {
+      const response = await fetch(`${BASE_HOST}/customers/${state.id}`, {
         method: 'PUT',
         body: formData,
         headers: {
@@ -236,7 +242,17 @@ const EditProfileScreen = () => {
     <>
     <ScrollView>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Edit Profile</Text>
+        <TouchableOpacity style={styles.update} onPress={pickImage}>
+        <Text style={styles.updateText}>Pick Image</Text>
+      </TouchableOpacity>
+
+        {imageProfile && (
+          <Image source={{ uri: imageProfile }} style={{ width: 80, height: 80, marginBottom: 10, borderRadius: 40, alignItems:"center" }} />
+        )}
+
+        <TouchableOpacity style={styles.update} onPress={handleSaveImage}>
+          <Text style={styles.updateText}>Save Image</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <View style={styles.inputContainer}>
@@ -292,18 +308,6 @@ const EditProfileScreen = () => {
           />
           <Text style={styles.errorText}>{addressError}</Text>
         </View>
-
-        <TouchableOpacity style={styles.update} onPress={pickImage}>
-  <Text style={styles.updateText}>Pick Image</Text>
-</TouchableOpacity>
-
-        {imageProfile && (
-          <Image source={{ uri: imageProfile }} style={{ width: 80, height: 80, marginBottom: 10, borderRadius: 40 }} />
-        )}
-
-        <TouchableOpacity style={styles.update} onPress={handleSaveImage}>
-          <Text style={styles.updateText}>Save Image</Text>
-        </TouchableOpacity>
 
         <TouchableOpacity style={styles.update} onPress={handleUpdateProfileData}>
           <Text style={styles.updateText}>Update Profile</Text>

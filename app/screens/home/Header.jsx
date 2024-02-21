@@ -5,11 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {jwtDecode} from 'jwt-decode';
 import "core-js/stable/atob";
 import { useEffect, useState } from "react";
+import http from "../../api/HttpConfig";
 
 
 export default function Header() {
   const [username, setUsername] = useState("");
-  const [imageProfile, setImageProfile] = useState(null);
   
 
   useEffect(() => {
@@ -20,13 +20,11 @@ export default function Header() {
       const token = await AsyncStorage.getItem("token")
       const decodedToken = jwtDecode(token);
         const userCredentialId = decodedToken.sub;
-        
-        const resUserInfo = await axios.get(`http://10.10.100.202:8090/api/users?userCredentialId=${userCredentialId}`);
+        console.log(userCredentialId);
+        const resUserInfo = await http.get(`/users?userCredentialId=${userCredentialId}`);
         console.log(resUserInfo.data.data)
         if (resUserInfo && resUserInfo.data) {
           const username = resUserInfo.data.data.userCredential.username
-
-          // const imageProfile = resUserInfo.data.data.imageProfile || "../../../assets/icon.png";
           await AsyncStorage.setItem("username", username)
           await AsyncStorage.setItem("password", resUserInfo.data.data.userCredential.password)
           await AsyncStorage.setItem("id", resUserInfo.data.data.id)
@@ -34,8 +32,6 @@ export default function Header() {
           await AsyncStorage.setItem("email", resUserInfo.data.data.email)
           await AsyncStorage.setItem("phoneNumber", resUserInfo.data.data.phone)
           await AsyncStorage.setItem("address", resUserInfo.data.data.address)
-          // await AsyncStorage.setItem("imageProfile", imageProfile);
-          // await AsyncStorage.setItem("imageProfile", resUserInfo.data.data.imageProfile)
           setUsername(username);
           
         }

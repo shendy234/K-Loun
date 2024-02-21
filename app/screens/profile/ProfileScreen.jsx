@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors';
@@ -8,51 +8,29 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuthContext } from '../../store/AuthContext';
 
 const ProfileScreen = () => {
-  const { state, signOut } = useAuthContext();
+  const { state, signOut, refresh } = useAuthContext();
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [imageProfile, setImageProfile] = useState(null);
+  const dataUser = useAuthContext().state.dataUser;
 
   useEffect(() => {
-    handleProfile();
-
-    // Add listener to refresh data when coming back from EditProfileScreen
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleProfile();
-    });
-
-    return () => {
-      unsubscribe();
-    };
+    refresh();
   }, [navigation]);
-
-  const handleProfile = async () => {
-    // Retrieve name and email from AsyncStorage
-    setName(await AsyncStorage.getItem('name'));
-    setEmail(await AsyncStorage.getItem('email'));
-  
-    // Retrieve the profile image URL from AsyncStorage
-    const imageProfileURL = await AsyncStorage.getItem('imageProfile');
-    setImageProfile(imageProfileURL ? { uri: imageProfileURL } : null);
-  };
-  
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('imageProfile');
     signOut();
   };
-
   return (
     <ScrollView>
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={imageProfile ? imageProfile : require("../../../assets/icon.png")}
-          style={styles.avatar}
-        />
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.email}>{email}</Text>
+      <Image
+        source={dataUser.profileImage ?  {uri: dataUser.profileImage.url }: require("../../../assets/icon.png")}
+        style={styles.avatar}
+      />
+        <Text style={styles.name}>{dataUser.name}</Text>
+        <Text style={styles.email}>{dataUser.email}</Text>
       </View>
       <View style={styles.options}>
         <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('HomeStack',{screen: 'EditProfile'}) }>

@@ -8,6 +8,7 @@ import http from "../../api/HttpConfig";
 
 const ConfirmationScreen = ({ navigation, route }) => {
   const dataUser = useAuthContext().state.dataUser;
+  console.log(dataUser);
   const serv = route.params;
 
   const [isLoading, setIsLoading] = useState(false);

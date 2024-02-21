@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 import Colors from '../../Utils/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -12,15 +12,16 @@ import { BASE_HOST } from '../../api/BaseUrl';
 const EditProfileScreen = () => {
   const { refresh } = useAuthContext();
   const navigation = useNavigation();
+  const dataUser = useAuthContext().state.dataUser;
   const [state, setState] = useState({
-    id:'',
-    password: '',
-    name: '',
-    username: '',
-    email: '',
-    phone: '',
-    address: '',
-    imageProfile:'',
+    id:dataUser.id,
+    password: dataUser.password,
+    name: dataUser.name,
+    username: dataUser.username,
+    email: dataUser.email,
+    phone: dataUser.phone,
+    address: dataUser.address,
+    imageProfile: dataUser.imageProfile,
   });
 
   const [imageProfile, setImageProfile] = useState(null);
@@ -29,43 +30,9 @@ const EditProfileScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [addressError, setAddressError] = useState('');
-  const [dataUser, setDataUser] = useState('');
-
-  useEffect(() => {
-    handleUpdateProfile();
-  }, []);
-
-  const handleUpdateProfile = async () => {
-    
-    try {
-      const storedUsername = await AsyncStorage.getItem('username');
-      const storedName = await AsyncStorage.getItem('name');
-      const storedEmail = await AsyncStorage.getItem('email');
-      const storedPhone = await AsyncStorage.getItem('phoneNumber');
-      const storedAddress = await AsyncStorage.getItem('address');
-      const storedId = await AsyncStorage.getItem('id');
-      const storedPassword = await AsyncStorage.getItem('password');
-      const storedImageProfile = await AsyncStorage.getItem('imageProfile');
-
-      setState({
-        name: storedName,
-        username: storedUsername,
-        email: storedEmail,
-        phone: storedPhone,
-        address: storedAddress,
-        id: storedId,
-        password: storedPassword,
-        imageProfile: storedImageProfile,
-      });
-    } catch (error) {
-      console.error('Error retrieving data from AsyncStorage:', error);
-    }
-  };
 
   const handleChange = (name, text) => {
-
     let formattedText = text;
-
     if (name === 'phone') {
       formattedText = text.replace(/[^0-9]/g, '');
       formattedText = formattedText.substring(0, 12);
@@ -129,21 +96,14 @@ const EditProfileScreen = () => {
           address: state.address,
           imageProfile: state.imageProfile,
         });
-
-        await AsyncStorage.setItem('name', state.name);
-        await AsyncStorage.setItem('username', state.username);
-        await AsyncStorage.setItem('email', state.email);
-        await AsyncStorage.setItem('phoneNumber', state.phone);
-        await AsyncStorage.setItem('address', state.address);
-        await AsyncStorage.setItem('imageProfile', state.imageProfile);
         console.log('Profile Updated Successfully');
-
+        Alert.alert('Success', 'Profile updated successfully!', [{ text: 'OK' }]);
         refresh();
-        // Navigate back to ProfileScreen and trigger the focus event
         navigation.navigate('ProfileScreen');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      Alert.alert('Error', 'Failed to update profile. Please try again.', [{ text: 'OK' }]);
     }
   };
 
@@ -162,7 +122,6 @@ const EditProfileScreen = () => {
       console.log('Image picking result:', result);
   
       if (!result.canceled) {
-        // Access the URI from the assets array
         const pickedImageUri = result.assets[0]?.uri;
   
         if (pickedImageUri) {
@@ -195,36 +154,31 @@ const EditProfileScreen = () => {
       const formData = new FormData();
       formData.append('imageProfile', {
         uri: imageProfile,
-        type: 'image/jpeg', // Specify the correct image type
-        name: 'profile_image.jpg', // Specify a valid image name with the correct extension
+        type: 'image/jpeg',
+        name: 'profile_image.jpg',
       });
   
       const response = await fetch(`${BASE_HOST}/customers/${state.id}`, {
         method: 'PUT',
         body: formData,
         headers: {
-          // Add any necessary headers here, e.g., authorization token
           'Content-Type': 'multipart/form-data',
         },
       });
   
       if (response.ok) {
         const imageUrl = imageProfile;
-  
-        if (imageUrl) {
-          await AsyncStorage.setItem('imageProfile', imageUrl);
           console.log('Image uploaded successfully.');
-        } else {
-          console.error('Image URL is undefined or null in the server response.');
-        }
+          Alert.alert('Success', 'Image saved successfully!', [{ text: 'OK' }]);
       } else {
-        // Check for non-successful HTTP response status
+        Alert.alert('Error', 'Failed to save image. Please try again.', [{ text: 'OK' }]);
         console.error('Error uploading image. Server response:', response.status, response.statusText);
         console.log()
         throw new Error('Image upload failed.');
       }
     } catch (error) {
       console.error('Error uploading image:', error.message);
+      Alert.alert('Error', 'Failed to save image. Please try again.', [{ text: 'OK' }])
     }
   };
   

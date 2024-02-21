@@ -1,43 +1,9 @@
 import { View, Text, Image, StyleSheet, TextInput } from "react-native";
 import Colors from "../../Utils/Colors";
-import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {jwtDecode} from 'jwt-decode';
 import "core-js/stable/atob";
-import { useEffect, useState } from "react";
-import http from "../../api/HttpConfig";
 
 
 export default function Header() {
-  const [username, setUsername] = useState("");
-  
-
-  useEffect(() => {
-    handleHeader()
-  }, [])
-
-  const handleHeader = async () => {
-      const token = await AsyncStorage.getItem("token")
-      const decodedToken = jwtDecode(token);
-        const userCredentialId = decodedToken.sub;
-        console.log(userCredentialId);
-        const resUserInfo = await http.get(`/users?userCredentialId=${userCredentialId}`);
-        console.log(resUserInfo.data.data)
-        if (resUserInfo && resUserInfo.data) {
-          const username = resUserInfo.data.data.userCredential.username
-          await AsyncStorage.setItem("username", username)
-          await AsyncStorage.setItem("password", resUserInfo.data.data.userCredential.password)
-          await AsyncStorage.setItem("id", resUserInfo.data.data.id)
-          await AsyncStorage.setItem("name", resUserInfo.data.data.name)
-          await AsyncStorage.setItem("email", resUserInfo.data.data.email)
-          await AsyncStorage.setItem("phoneNumber", resUserInfo.data.data.phone)
-          await AsyncStorage.setItem("address", resUserInfo.data.data.address)
-          setUsername(username);
-          
-        }
-  };
-  
-
   return (
     <View style={styles.container}>
       <View style={styles.profileMainContainer}>
@@ -45,12 +11,6 @@ export default function Header() {
           source={require("../../../assets/LogoPutih.png")}
           style={styles.userImage}
         />
-        <View style={styles.profileContainer}>
-          <View>
-            <Text style={styles.welcomeText}>Welcome</Text>
-            <Text style={styles.userName}>{username}</Text>
-          </View>
-        </View>
       </View>
     </View>
   );

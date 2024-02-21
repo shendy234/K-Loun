@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ImageBackground, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Colors from '../../Utils/Colors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import http from '../../api/HttpConfig';
 import { useNavigation } from '@react-navigation/native';
+import { useAuthContext } from '../../store/AuthContext';
 
 const EditPasswordScreen = () => {
   const navigation = useNavigation();
+  const dataUser = useAuthContext().state.dataUser;
   const [state, setState] = useState({
     username: '',
     oldPassword: '',
@@ -21,26 +22,10 @@ const EditPasswordScreen = () => {
 
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleUpdatePassword();
-    };
-    fetchData();
-  }, []);
-
-  const handleUpdatePassword = async () => {
-    try {
-      const storedUsername = await AsyncStorage.getItem('username');
-      setState((prevState) => ({ ...prevState, username: storedUsername }));
-    } catch (error) {
-      console.error('Error retrieving data from AsyncStorage:', error);
-    }
-  };
-
+  
   const handleChange = (name, text) => {
     setState((prevState) => ({ ...prevState, [name]: text }));
-    setErrorMessages((prevErrors) => ({ ...prevErrors, [name]: '' })); // Clear previous error messages
+    setErrorMessages((prevErrors) => ({ ...prevErrors, [name]: '' }));
   };
 
   const handleUpdatePasswordData = async () => {
@@ -53,22 +38,34 @@ const EditPasswordScreen = () => {
         return;
       }
 
-      const res = await http.put('/api/auth/reset-password', {
-        username: state.username,
+      const res = await http.put('/reset-password', {
+        username: dataUser.username,
         oldPassword: state.oldPassword,
         newPassword: state.newPassword,
       });
 
-      console.log('Password Updated Successfully:', res.data);
-      setState({
-        username: '',
-        oldPassword: '',
-        newPassword: '',
-      });
+      if (res.status === 200) {
+        console.log('Password Updated Successfully:', res.data);
 
-      navigation.goBack();
+   
+        setState({
+          username: '',
+          oldPassword: '',
+          newPassword: '',
+        });
+
+   
+        Alert.alert('Success', 'Password updated successfully!', [{ text: 'OK' }]);
+
+ 
+        navigation.goBack();
+      } else {
+        console.log('Password update failed with status code:', res.status);
+        Alert.alert('Failed', 'Password updated Failed!', [{ text: 'OK' }]);
+      }
     } catch (error) {
       console.error('Error updating Password:', error);
+      Alert.alert('Failed', 'Password updated Failed!', [{ text: 'OK' }]);
     }
   };
 
@@ -83,11 +80,11 @@ const EditPasswordScreen = () => {
             secureTextEntry={!showOldPassword}
             value={state.oldPassword}
             onChangeText={(text) => handleChange('oldPassword', text)}
-            clearTextOnFocus={true} // Clear the text input when focused
+            clearTextOnFocus={true} 
           />
         <TouchableOpacity
           style={styles.iconContainer}
-          onPress={() => setShowOldPassword(!showOldPassword)} // Toggle showPassword state
+          onPress={() => setShowOldPassword(!showOldPassword)} 
         >
           <Feather name={showOldPassword ? 'eye-off' : 'eye'} size={24} color="black" />
         </TouchableOpacity>
@@ -102,11 +99,11 @@ const EditPasswordScreen = () => {
             secureTextEntry={!showNewPassword}
             value={state.newPassword}
             onChangeText={(text) => handleChange('newPassword', text)}
-            clearTextOnFocus={true} // Clear the text input when focused
+            clearTextOnFocus={true}
           />
         <TouchableOpacity
           style={styles.iconContainer}
-          onPress={() => setShowNewPassword(!showNewPassword)} // Toggle showPassword state
+          onPress={() => setShowNewPassword(!showNewPassword)} 
         >
           <Feather name={showNewPassword ? 'eye-off' : 'eye'} size={24} color="black" />
         </TouchableOpacity>

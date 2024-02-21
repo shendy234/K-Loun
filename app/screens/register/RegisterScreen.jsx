@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, ImageBackground, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, ImageBackground, Image, ScrollView, Alert } from 'react-native';
 import Colors from '../../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
 import http from '../../api/HttpConfig';
@@ -31,7 +31,6 @@ export default function RegisterScreen() {
     setPhoneError('');
     setAddressError('');
 
-    // Validation
     if (!username) {
       setUsernameError('Username is required');
     }
@@ -54,28 +53,33 @@ export default function RegisterScreen() {
     if (!username || !password || !email || !name || !phone || !address) {
       return;
     }
-    http
-      .post(`/api/auth/register`, {
+
+    try {
+      const res = await http.post(`/api/auth/register`, {
         username,
         password,
         name,
         address,
         phone,
         email,
-      })
-      .then(async (res) => {
+      });
+      if (res.status === 200) {
         setUsername('');
         setPassword('');
         setName('');
         setAddress('');
         setPhone('');
         setEmail('');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
+        navigation.goBack();
+        Alert.alert('Success', 'Registration successful!', [{ text: 'OK' }]);
+      } else {
+        console.log('Registration failed with status code:', res.status);
+      }
+    } catch (err) {
+      console.log('Error during registration:', err);
+    }
+  };
 
   return (
     <View style={styles.container}>

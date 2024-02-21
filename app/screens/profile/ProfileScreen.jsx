@@ -18,7 +18,6 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('imageProfile');
     signOut();
   };
   return (
@@ -26,7 +25,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
       <Image
-        source={dataUser.profileImage ?  {uri: dataUser.profileImage.url }: require("../../../assets/icon.png")}
+        source={dataUser.profileImage ?  {uri: dataUser.profileImage.url}: require("../../../assets/icon.png")}
         style={styles.avatar}
       />
         <Text style={styles.name}>{dataUser.name}</Text>

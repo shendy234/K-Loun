@@ -68,7 +68,7 @@ const DetailTransactionScreen = ({ navigation, route }) => {
   const acceptHandle = async () => {
     setIsLoading(true);
     try {
-      await http.put(`api/transaction/confirm-accept`, {
+      await http.put(`/transaction/confirm-accept`, {
         id: transaction.id,
       });
     } catch (error) {

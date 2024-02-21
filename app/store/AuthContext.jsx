@@ -15,6 +15,8 @@ const AuthContext = createContext({});
 
 const AuthContextProvider = ({ children }) => {
 
+  const [loading, setLoading] = useState(false);
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -50,7 +52,9 @@ const AuthContextProvider = ({ children }) => {
   const bootstrapAsync = async () => {
     let userToken;
     let dataUser;
+    
     try {
+      // setLoading(true)
       await AsyncStorage.getItem("token",).then(async (token) => {
         await http
           .get(`/customers/${jwtDecode(token).userId}`)
@@ -63,28 +67,55 @@ const AuthContextProvider = ({ children }) => {
             console.error(error); 
         }); 
       }).catch((error) => { 
-        // Handle any errors that occur 
-        alert.Alert('no conection internet')
         console.error(error); 
     }); ;
 
       userToken = await AsyncStorage.getItem("token");
-      // userId = jwtDecode(userToken).userId;
-
-      // const response = await http.get(`/api/customers/${AsyncStorage.getItem("token")}`);
-      // // const data = response.data;
     } catch (e) {
-      // Restoring token failed
+      console.log(e)
     }
 
-    // After restoring token, we may need to validate it in production apps
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
+    // setLoading(false)
     dispatch({ type: "RESTORE_TOKEN", token: userToken, dataUser: dataUser });
+    // console.log(state.isLoading)
   };
+
+  const refresh = async () => {
+    let userToken;
+    let dataUser;
+    
+    try {
+      await AsyncStorage.getItem("token",).then(async (token) => {
+       
+        await http
+          .get(`/customers/${jwtDecode(token).userId}`)
+          .then(async (response) => {
+            dataUser = response.data.data;
+            
+          }).catch((error) => { 
+            // Handle any errors that occur 
+            
+            console.error(error); 
+        }); 
+      }).catch((error) => { 
+        console.error(error); 
+    }); ;
+
+      userToken = await AsyncStorage.getItem("token");
+    } catch (e) {
+      console.log(e)
+    }
+
+   
+    dispatch({ type: "RESTORE_TOKEN", token: userToken, dataUser: dataUser });
+    console.log(state.isLoading)
+  };
+
+
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
+
+    console.log(state.isLoading)
     bootstrapAsync();
   }, [state.isSignout]);
 
@@ -101,7 +132,7 @@ const AuthContextProvider = ({ children }) => {
   );
 
   return (
-    <AuthContext.Provider value={{ ...authContext, state }}>
+    <AuthContext.Provider value={{ ...authContext, state, loading }}>
       {children}
     </AuthContext.Provider>
   );

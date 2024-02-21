@@ -8,7 +8,6 @@ import http from "../../api/HttpConfig";
 
 const ConfirmationScreen = ({ navigation, route }) => {
   const dataUser = useAuthContext().state.dataUser;
-  console.log(dataUser);
   const serv = route.params;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +15,7 @@ const ConfirmationScreen = ({ navigation, route }) => {
   const confirmationHandle = async (userId, serviceId) => {
     setIsLoading(true);
     try {
-      const response = await http.post(`/api/transaction`, {
+      const response = await http.post(`/transaction`, {
         userId: userId,
         serviceId: serviceId,
       });

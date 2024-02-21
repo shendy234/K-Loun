@@ -7,7 +7,6 @@ import {formatIDRCurrency} from "../../Utils/FormatIdr"
 
 const CardTransactions = ({ item }) => {
   const navigation = useNavigation();
-  // console.log(item)
   return (
     <TouchableOpacity
       onPress={() => {
@@ -19,7 +18,7 @@ const CardTransactions = ({ item }) => {
       <View>
         <Image
           style={styles.image}
-          source={require("../../../assets/images/loundry-service.png")}
+          source={item.service.image ? {uri:item.service.image}:require("../../../assets/images/loundry-service.png")}
           resizeMode="cover"
         />
       </View>

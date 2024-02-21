@@ -1,1 +1,1 @@
-export const BASE_HOST = "http://10.10.100.202:8090";
+export const BASE_HOST = "http://43.218.88.89:8080";

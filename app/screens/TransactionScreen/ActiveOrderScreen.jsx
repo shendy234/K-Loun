@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Text,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -12,10 +13,9 @@ import CardTransactions from "../../components/Transaction/CardTransactions";
 import http from "../../api/HttpConfig";
 import { useAuthContext } from "../../store/AuthContext";
 import Colors from "../../Utils/Colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const ActiveOrderScreen = () => {
-
-  console.log("3")
 
   const dataUser = useAuthContext().state.dataUser;
   const [transactions, setTransactions] = useState([]);
@@ -25,7 +25,7 @@ const ActiveOrderScreen = () => {
   const [isEndReached, setIsEndReached] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   useEffect(() => {
     fetchTransactions();
   }, []);
@@ -36,7 +36,7 @@ const ActiveOrderScreen = () => {
     setLoading(true);
     try {
       const response = await http.get(
-        `/api/transaction/active/${dataUser.id}?page=${currentPage}&size=${limit}`
+        `/transaction/active/${dataUser.id}?page=${currentPage}&size=${limit}`
       );
       const data = response.data.data;
       setTransactions((prevTransactions) => [...prevTransactions, ...data]);
@@ -65,7 +65,7 @@ const ActiveOrderScreen = () => {
     setTransactions([]);
     setCurrentPage(1);
     setHasMoreData(true);
-    setRefreshing(true);
+    // setRefreshing(true);
     fetchTransactions();
   };
 
@@ -81,9 +81,25 @@ const ActiveOrderScreen = () => {
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
           !transactions == [] ? (
-            <Text style={{ color: Colors.PRIMARY, textAlign: "center" }}>
-              No Transaction Found
-            </Text>
+            <View>
+              <Text style={{ color: Colors.PRIMARY, textAlign: "center" }}>
+                No Transaction Found
+              </Text>
+              <TouchableOpacity
+                onPress={onRefresh}
+                style={{
+                  flex: 1,
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="refresh-circle-outline"
+                  size={65}
+                  color={Colors.PRIMARY}
+                />
+              </TouchableOpacity>
+            </View>
           ) : (
             <Text>Loading</Text>
           )

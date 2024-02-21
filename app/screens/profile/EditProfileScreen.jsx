@@ -220,22 +220,13 @@ const EditProfileScreen = () => {
       } else {
         // Check for non-successful HTTP response status
         console.error('Error uploading image. Server response:', response.status, response.statusText);
+        console.log()
         throw new Error('Image upload failed.');
       }
     } catch (error) {
       console.error('Error uploading image:', error.message);
     }
   };
-  
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       alert('Sorry, we need camera roll permissions to make this work!');
-  //     }
-  //   })();
-  // }, []);
   
 
   return (

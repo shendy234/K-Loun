@@ -20,7 +20,6 @@ import { formatIDRCurrency } from "../../Utils/FormatIdr";
 
 const DetailTransactionScreen = ({ navigation, route }) => {
   const userId = route.params.userId;
-  console.log(userId);
 
   const [isLoading, setIsLoading] = useState(true);
   const [transaction, setTransactions] = useState(null);
@@ -29,7 +28,7 @@ const DetailTransactionScreen = ({ navigation, route }) => {
 
   const getUserHandle = async () => {
     try {
-      const response = await http.get(`/api/transaction/${userId}`);
+      const response = await http.get(`/transaction/${userId}`);
       // setIsLoading(true);
       setTransactions(response.data.data);
 
@@ -52,13 +51,16 @@ const DetailTransactionScreen = ({ navigation, route }) => {
     setIsLoading(true);
 
     try {
-      await http.put(`api/transaction/cancel`, {
+      await http.put(`transaction/cancel`, {
         id: transaction.id,
       });
     } catch (error) {
       Alert.alert(error);
     }
-    Alert.alert( 'Booking Canceled!',`You have successfully cancel book the services. Admin will not process your booking.`);
+    Alert.alert(
+      "Booking Canceled!",
+      `You have successfully cancel book the services. Admin will not process your booking.`
+    );
     getUserHandle();
     setIsLoading(false);
   };
@@ -73,7 +75,10 @@ const DetailTransactionScreen = ({ navigation, route }) => {
       Alert.alert(error);
     }
 
-    Alert.alert( 'Completed!',`You have successfully completed your order services. Thanks.`);
+    Alert.alert(
+      "Completed!",
+      `You have successfully completed your order services. Thanks.`
+    );
     getUserHandle();
     setIsLoading(false);
   };
@@ -133,7 +138,6 @@ const DetailTransactionScreen = ({ navigation, route }) => {
               <Text style={styles.columnRight}>{`${formatDateTime(
                 transaction.finishDate
               )}`}</Text>
-              }
             </View>
           ) : null}
           <View style={{ ...styles.rowContainer, alignItems: "flex-start" }}>

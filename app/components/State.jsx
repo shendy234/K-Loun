@@ -12,13 +12,13 @@ const State = (props) => {
         ...styles.stateContainer,
         backgroundColor:
           indicator == "1"
-            ? "rgba(51, 94, 247, 0.08)"
+            ? "rgba(51, 94, 247, 0.08)" 
             : indicator == "2"
-            ? "rgba(114, 16, 255, 0.08)"
-            : indicator == "3"
-            ? "#F2FFFC"
-            : indicator == "4"
             ? "#FFF5F5"
+            : indicator == "3"
+            ? "rgba(114, 16, 255, 0.08)" 
+            : indicator == "4"
+            ? "#F2FFFC"
             : "",
       }}
     >
@@ -29,11 +29,11 @@ const State = (props) => {
             indicator == "1"
               ? Colors.PRIMARY
               : indicator == "2"
-              ? Colors.PURPLE
+              ?  Colors.RED
               : indicator == "3"
-              ? Colors.GREEN
+              ? Colors.PURPLE
               : indicator == "4"
-              ? Colors.RED
+              ? Colors.GREEN
               : "",
         }}
       >
